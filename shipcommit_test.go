@@ -8,19 +8,19 @@ import (
 // legalPlacement builds the standard fleet in fixed rows.
 func legalPlacement() [100]uint8 {
 	var p [100]uint8
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		p[0+i] = 1 // carrier row 0, cols 0-4
 	}
-	for i := 0; i < 4; i++ {
+	for i := range 4 {
 		p[10+i] = 2 // battleship row 1
 	}
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		p[20+i] = 3 // cruiser row 2
 	}
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		p[30+i] = 4 // submarine row 3
 	}
-	for i := 0; i < 2; i++ {
+	for i := range 2 {
 		p[40+i] = 5 // destroyer row 4
 	}
 	return p
@@ -31,7 +31,7 @@ func TestCommitRevealRoundTrip(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for i := 0; i < 100; i++ {
+	for i := range 100 {
 		if !Verify(commits[i], board.Cells[i]) {
 			t.Fatalf("cell %d failed verification", i)
 		}
@@ -77,16 +77,16 @@ func TestFleetLegal(t *testing.T) {
 	// rest of the fleet is placed on clear rows so only the bend can fail.
 	var bent [100]uint8
 	bent[0], bent[1], bent[2], bent[3], bent[13] = 1, 1, 1, 1, 1
-	for i := 0; i < 4; i++ {
+	for i := range 4 {
 		bent[30+i] = 2
 	}
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		bent[40+i] = 3
 	}
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		bent[50+i] = 4
 	}
-	for i := 0; i < 2; i++ {
+	for i := range 2 {
 		bent[60+i] = 5
 	}
 	if err := FleetLegal(bent); !errors.Is(err, ErrWrongShape) {
@@ -95,19 +95,19 @@ func TestFleetLegal(t *testing.T) {
 
 	// Diagonal ship.
 	var d [100]uint8
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		d[i*11] = 1 // diagonal
 	}
-	for i := 0; i < 4; i++ {
+	for i := range 4 {
 		d[50+i] = 2
 	}
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		d[60+i] = 3
 	}
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		d[70+i] = 4
 	}
-	for i := 0; i < 2; i++ {
+	for i := range 2 {
 		d[80+i] = 5
 	}
 	if err := FleetLegal(d); !errors.Is(err, ErrWrongShape) {
@@ -125,10 +125,10 @@ func TestFleetLegal(t *testing.T) {
 	// (legalPlacement) and passed above. Also duplicate fleet (two carriers)
 	// must fail.
 	p = legalPlacement()
-	for i := 0; i < 2; i++ {
+	for i := range 2 {
 		p[40+i] = 0
 	}
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		p[50+i] = 1 // second carrier instead of destroyer
 	}
 	if err := FleetLegal(p); !errors.Is(err, ErrWrongFleet) {
@@ -144,7 +144,7 @@ func TestNewBoardRejectsIllegalPlacement(t *testing.T) {
 }
 
 func TestRandomPlacementAlwaysLegal(t *testing.T) {
-	for i := 0; i < 200; i++ {
+	for i := range 200 {
 		p, err := RandomPlacement()
 		if err != nil {
 			t.Fatal(err)

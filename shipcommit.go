@@ -78,7 +78,7 @@ func NewBoard(placement [100]uint8) (Board, [100][32]byte, error) {
 	}
 	var b Board
 	var commits [100][32]byte
-	for i := 0; i < 100; i++ {
+	for i := range 100 {
 		b.Cells[i] = CellReveal{Cell: uint8(i), ShipID: placement[i]}
 		if _, err := rand.Read(b.Cells[i].Salt[:]); err != nil {
 			return Board{}, [100][32]byte{}, fmt.Errorf("shipcommit: rand: %w", err)
@@ -208,7 +208,7 @@ func shipFits(horizontal bool, x, y, length int) bool {
 
 // cellsFree reports whether every cell the ship would occupy is empty.
 func cellsFree(placement *[100]uint8, horizontal bool, x, y, length int) bool {
-	for i := 0; i < length; i++ {
+	for i := range length {
 		if placement[shipCell(horizontal, x, y, i)] != 0 {
 			return false
 		}
@@ -218,7 +218,7 @@ func cellsFree(placement *[100]uint8, horizontal bool, x, y, length int) bool {
 
 // writeShip stamps ship id onto every cell it occupies.
 func writeShip(placement *[100]uint8, id uint8, horizontal bool, x, y, length int) {
-	for i := 0; i < length; i++ {
+	for i := range length {
 		placement[shipCell(horizontal, x, y, i)] = id
 	}
 }
